@@ -1,24 +1,20 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import { subAppMapInfo, handleRouter } from './generator'
+import Store from '../store'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/subapp',
     name: 'Home',
     component: Home
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: function () {
-      return import(/* webpackChunkName: "about" */ '../views/About.vue')
-    }
+    path: '/',
+    redirect: '/subapp'
   }
 ]
 
@@ -26,6 +22,39 @@ const router = new VueRouter({
   mode: 'hash',
   base: process.env.BASE_URL,
   routes
+})
+
+const subAppRoutes = {}
+
+router.beforeEach(function (to, from, next) {
+  const { path } = to;
+  // 取路径中标识子工程前缀的部分, 例如 '/subapp/xxx/index' 其中xxx即路由唯一前缀
+  const id = path.split('/')[2];
+  const subAppModule = subAppMapInfo[id];
+  if (subAppModule) {
+    if (subAppRoutes[id]) {
+      console.log('这个路径加载过')
+      next()
+    } else {
+      subAppModule().then((registerApp) => {
+        console.log(registerApp)
+        let result = registerApp.default()
+        // 加载路由
+        subAppRoutes[id] = result.router
+        routes[0].children = handleRouter(result)
+        router.addRoutes(routes)
+        // 加载状态
+        Store.registerModule(result.name, result.store)
+        next({...to, replace:true})
+        console.log('ok', '加载子项目成功')
+      }, (err) => {
+        console.log(err, '加载子项目失败')
+        next('/subapp')
+      })
+    }
+  } else {
+    next()
+  }
 })
 
 export default router

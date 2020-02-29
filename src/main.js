@@ -10,3 +10,11 @@ new Vue({
   store,
   render: h => h(App),
 }).$mount('#app')
+
+function registerGlobal (root, deps) {
+  Object.keys(deps).forEach((key) => {
+    root[key] = deps[key];
+  });
+}
+
+export default registerGlobal

@@ -8,6 +8,9 @@ export default new Vuex.Store({
     name: 'app'
   },
   mutations: {
+    todo (state) {
+      console.log(state, 'app')
+    }
   },
   actions: {
   },

@@ -1,24 +1,20 @@
 <template>
   <div class="home">
-    这是主项目<button @click="handleClick">click</button>
-    <router-view></router-view>
+    <h1 class="title">项目1home</h1>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
+// import HelloWorld from 'src/components/HelloWorld.vue'
 
 export default {
   name: 'Home',
   components: {
+    // HelloWorld
   },
   mounted () {
     console.log('Home')
-  },
-  methods: {
-    handleClick () {
-      console.log(this.$store)
-    }
   }
 }
 </script>

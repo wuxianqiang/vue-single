@@ -1,7 +1,11 @@
 <template>
   <div class="home">
-    这是主项目<button @click="handleClick">click</button>
-    <router-view></router-view>
+    <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
+    <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
+    <h1 class="title">项目2home
+
+      <button @click="handleClick">验证状态</button>
+    </h1>
   </div>
 </template>
 
@@ -17,7 +21,7 @@ export default {
   },
   methods: {
     handleClick () {
-      console.log(this.$store)
+      this.$store.commit('todo')
     }
   }
 }
